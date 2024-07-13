@@ -1,19 +1,18 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const wordSchema = new mongoose.Schema({
     word: {
         type: String,
-        required: true
+        required: true,
     },
     meaning: {
         type: String,
-        required: true
+        required: true,
     },
     examples: {
         type: [String],
-        required: true
-    }
+        required: true,
+    },
 });
 
-module.exports = mongoose.model('Word', wordSchema);
-
+module.exports = mongoose.model("Word", wordSchema);
