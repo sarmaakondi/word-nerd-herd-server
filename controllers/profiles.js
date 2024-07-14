@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/user');
-const verifyToken = require('../middleware/verify-token');
+const User = require("../models/user");
+const verifyToken = require("../middleware/verify-token");
 
-router.get('/:userId', verifyToken, async (req, res) => {
+router.get("/:userId", verifyToken, async (req, res) => {
     try {
-        if (req.user._id !== req.params.userId){
-            return res.status(401).json({ error: "Unauthorized"})
+        if (req.user._id !== req.params.userId) {
+            return res.status(401).json({ error: "Unauthorized" });
         }
         const user = await User.findById(req.user._id);
         if (!user) {
-            res.status(404)
-            throw new Error('Profile not found.');
+            res.status(404);
+            throw new Error("Profile not found.");
         }
         res.json({ user });
     } catch (error) {
