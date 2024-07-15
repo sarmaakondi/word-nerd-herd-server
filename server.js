@@ -10,6 +10,7 @@ const profilesRouter = require("./controllers/profiles");
 
 const wordsController = require("./controllers/words");
 const learnedWordsController = require("./controllers/learnedWords");
+const favoritedWordsController = require("./controllers/favoritedWords");
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -24,6 +25,7 @@ app.use("/users", usersRouter);
 app.use("/profiles", profilesRouter);
 app.use("/words", wordsController);
 app.use("/learnedWords", learnedWordsController);
+app.use("/favoritedWords", favoritedWordsController);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
