@@ -42,10 +42,24 @@ router.get("/user/v1", async (req, res) => {
     try {
         const query = { user: req.user._id };
         const existingLearnedWord = await learnedWord.find(query);
-        console.log(existingLearnedWord);
-        const words = await Word.find({}).limit(10);
+        const existingWordIds = [];
+        for (const learnedWord of existingLearnedWord) {
+            existingWordIds.push(learnedWord["word"]);
+        }
+        const words = await Word.find({
+            _id: { $nin: existingWordIds },
+        }).limit(10);
         response["words"] = words;
         response["count"] = response["words"].length;
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
+router.get("/user/v1/:id", async (req, res) => {
+    try {
+        const response = await Word.findById(req.params.id);
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
