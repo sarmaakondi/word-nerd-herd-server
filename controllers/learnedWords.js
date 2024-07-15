@@ -19,9 +19,20 @@ router.post("/:id", async (req, res) => {
     }
 });
 
-// GET ALL LEARNED WORDS COUNT
-
 // GET ALL LEARNED WORDS
+router.get("/words", async (req, res) => {
+    const response = {};
+    try {
+        const learnedWords = await learnedWord.find({}).limit(10);
+        response["learnedWords"] = learnedWords;
+        response["count"] = response["learnedWords"].length;
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
+// GET ALL LEARNED WORDS COUNT
 router.get("/count", async (req, res) => {
     try {
         const query = { user: req.user._id };
