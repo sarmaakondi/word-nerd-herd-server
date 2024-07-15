@@ -7,7 +7,9 @@ const mongoose = require("mongoose");
 const port = process.env.PORT || 3000;
 const usersRouter = require("./controllers/users");
 const profilesRouter = require("./controllers/profiles");
+
 const wordsController = require("./controllers/words");
+const learnedWordsController = require("./controllers/learnedWords");
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -20,7 +22,8 @@ app.use(express.json());
 // Routes go here
 app.use("/users", usersRouter);
 app.use("/profiles", profilesRouter);
-app.use('/words', wordsController);
+app.use("/words", wordsController);
+app.use("/learnedWords", learnedWordsController);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
