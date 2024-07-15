@@ -59,7 +59,8 @@ router.delete("/:id", async (req, res) => {
             return res.status(200).json({
                 message: "The current word has not been favorited yet.",
             });
-        const response = await existingFavoritedWord.deleteOne();
+        const response = await favoritedWord.findOneAndDelete( query );
+        res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
     }
