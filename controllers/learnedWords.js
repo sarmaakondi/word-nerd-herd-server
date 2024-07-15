@@ -23,7 +23,8 @@ router.post("/:id", async (req, res) => {
 router.get("/words", async (req, res) => {
     const response = {};
     try {
-        const learnedWords = await learnedWord.find({}).limit(10);
+        const query = { user: req.user._id };
+        const learnedWords = await learnedWord.find(query).limit(10);
         response["learnedWords"] = learnedWords;
         response["count"] = response["learnedWords"].length;
         res.status(200).json(response);
@@ -36,7 +37,7 @@ router.get("/words", async (req, res) => {
 router.get("/count", async (req, res) => {
     try {
         const query = { user: req.user._id };
-        const response = await learnedWord.estimatedDocumentCount(query);
+        const response = await learnedWord.countDocuments(query);
         res.status(200).json({ count: response });
     } catch (error) {
         res.status(500).json(error.message);
