@@ -9,6 +9,12 @@ router.use(verifyToken);
 // POST LEARNED WORD
 router.post("/:id", async (req, res) => {
     try {
+        const query = { user: req.user._id, word: req.params.id };
+        const existingLearnedWord = await learnedWord.find(query);
+        if (existingLearnedWord.length > 0)
+            return res.status(200).json({
+                message: "The current word is already marked as learned.",
+            });
         const response = await learnedWord.create({
             user: req.user._id,
             word: req.params.id,
