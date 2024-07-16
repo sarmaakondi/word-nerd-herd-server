@@ -37,7 +37,7 @@ router.use(verifyToken);
 // AUTHENTICATED ROUTES
 
 // GET ALL WORDS
-router.get("/user/v1", async (req, res) => {
+router.get("/auth/user", async (req, res) => {
     const response = {};
     try {
         const query = { user: req.user._id };
@@ -57,7 +57,7 @@ router.get("/user/v1", async (req, res) => {
     }
 });
 
-router.get("/user/v1/:id", async (req, res) => {
+router.get("auth/user/:id", async (req, res) => {
     try {
         const response = await Word.findById(req.params.id);
         res.status(200).json(response);
