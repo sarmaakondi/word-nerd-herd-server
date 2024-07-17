@@ -3,6 +3,7 @@ const router = express.Router();
 const verifyToken = require("../middleware/verify-token");
 
 const favoritedWord = require("../models/favoritedWord");
+const Word = require("../models/word");
 
 router.use(verifyToken);
 
@@ -31,8 +32,12 @@ router.get("/words", async (req, res) => {
     try {
         const query = { user: req.user._id };
         const favoritedWords = await favoritedWord.find(query).limit(10);
-        response["favoritedWords"] = favoritedWords;
-        response["count"] = response["favoritedWords"].length;
+        const wordIds = favoritedWords.map(
+            (favoritedWord) => favoritedWord["word"]
+        );
+        const words = await Word.find({ _id: { $in: wordIds } });
+        response["words"] = words;
+        response["count"] = response["words"].length;
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
@@ -59,7 +64,7 @@ router.delete("/:id", async (req, res) => {
             return res.status(200).json({
                 message: "The current word has not been favorited yet.",
             });
-        const response = await favoritedWord.findOneAndDelete( query );
+        const response = await favoritedWord.findOneAndDelete(query);
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
