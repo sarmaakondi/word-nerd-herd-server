@@ -3,6 +3,7 @@ const router = express.Router();
 const verifyToken = require("../middleware/verify-token");
 
 const learnedWord = require("../models/learnedWord");
+const Word = require("../models/word");
 
 router.use(verifyToken);
 
@@ -31,8 +32,10 @@ router.get("/words", async (req, res) => {
     try {
         const query = { user: req.user._id };
         const learnedWords = await learnedWord.find(query).limit(10);
-        response["learnedWords"] = learnedWords;
-        response["count"] = response["learnedWords"].length;
+        const wordIds = learnedWords.map((learnedWord) => learnedWord["word"]);
+        const words = await Word.find({ _id: { $in: wordIds } });
+        response["words"] = words;
+        response["count"] = response["words"].length;
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
