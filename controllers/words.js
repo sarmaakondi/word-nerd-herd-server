@@ -1,9 +1,11 @@
 const express = require("express");
+const verifyToken = require("../middleware/verify-token");
 const Word = require("../models/word");
+const learnedWord = require("../models/learnedWord");
 
 const router = express.Router();
 
-// come back and make routes private if we decide to go with that
+// PUBLIC ROUTES
 
 // GET ALL WORDS
 router.get("/", async (req, res) => {
@@ -29,5 +31,39 @@ router.get("/:id", async (req, res) => {
 });
 
 // We may not actually need to call this router in the front end.
+
+router.use(verifyToken);
+
+// AUTHENTICATED ROUTES
+
+// GET ALL WORDS
+router.get("/auth/user", async (req, res) => {
+    const response = {};
+    try {
+        const query = { user: req.user._id };
+        const existingLearnedWord = await learnedWord.find(query);
+        const existingWordIds = [];
+        for (const learnedWord of existingLearnedWord) {
+            existingWordIds.push(learnedWord["word"]);
+        }
+        const words = await Word.find({
+            _id: { $nin: existingWordIds },
+        }).limit(10);
+        response["words"] = words;
+        response["count"] = response["words"].length;
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
+router.get("auth/user/:id", async (req, res) => {
+    try {
+        const response = await Word.findById(req.params.id);
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
 
 module.exports = router;

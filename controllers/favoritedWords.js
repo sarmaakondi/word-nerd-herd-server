@@ -2,21 +2,21 @@ const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/verify-token");
 
-const learnedWord = require("../models/learnedWord");
+const favoritedWord = require("../models/favoritedWord");
 const Word = require("../models/word");
 
 router.use(verifyToken);
 
-// POST LEARNED WORD
+//POST FAVORITED WORD
 router.post("/:id", async (req, res) => {
     try {
         const query = { user: req.user._id, word: req.params.id };
-        const existingLearnedWord = await learnedWord.find(query);
-        if (existingLearnedWord.length > 0)
+        const existingFavoritedWord = await favoritedWord.find(query);
+        if (existingFavoritedWord.length > 0)
             return res.status(200).json({
-                message: "The current word is already marked as learned.",
+                message: "The current word is already marked as favorited.",
             });
-        const response = await learnedWord.create({
+        const response = await favoritedWord.create({
             user: req.user._id,
             word: req.params.id,
         });
@@ -26,13 +26,15 @@ router.post("/:id", async (req, res) => {
     }
 });
 
-// GET ALL LEARNED WORDS
+// GET ALL FAVORITED WORDS
 router.get("/words", async (req, res) => {
     const response = {};
     try {
         const query = { user: req.user._id };
-        const learnedWords = await learnedWord.find(query).limit(10);
-        const wordIds = learnedWords.map((learnedWord) => learnedWord["word"]);
+        const favoritedWords = await favoritedWord.find(query).limit(10);
+        const wordIds = favoritedWords.map(
+            (favoritedWord) => favoritedWord["word"]
+        );
         const words = await Word.find({ _id: { $in: wordIds } });
         response["words"] = words;
         response["count"] = response["words"].length;
@@ -42,12 +44,28 @@ router.get("/words", async (req, res) => {
     }
 });
 
-// GET ALL LEARNED WORDS COUNT
+//GET ALL FAVORITED WORDS COUNT
 router.get("/count", async (req, res) => {
     try {
         const query = { user: req.user._id };
-        const response = await learnedWord.countDocuments(query);
+        const response = await favoritedWord.countDocuments(query);
         res.status(200).json({ count: response });
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
+//UNFAVORITE A WORD
+router.delete("/:id", async (req, res) => {
+    try {
+        const query = { user: req.user._id, word: req.params.id };
+        const existingFavoritedWord = await favoritedWord.find(query);
+        if (existingFavoritedWord.length === 0)
+            return res.status(200).json({
+                message: "The current word has not been favorited yet.",
+            });
+        const response = await favoritedWord.findOneAndDelete(query);
+        res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
     }
