@@ -34,7 +34,10 @@ router.get("/words", async (req, res) => {
         const learnedWords = await learnedWord.find(query).limit(5);
         const wordIds = learnedWords.map((learnedWord) => learnedWord["word"]);
         const words = await Word.find({ _id: { $in: wordIds } });
-        response["words"] = words;
+        const updatedWords = words.map((word) => {
+            return { ...word["_doc"], isLearning: true };
+        });
+        response["words"] = updatedWords;
         response["count"] = response["words"].length;
         res.status(200).json(response);
     } catch (error) {
