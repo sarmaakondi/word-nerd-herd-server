@@ -11,7 +11,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     const response = {};
     try {
-        const words = await Word.find({}).limit(10);
+        const words = await Word.find({}).limit(5);
         response["words"] = words;
         response["count"] = response["words"].length;
         res.status(200).json(response);

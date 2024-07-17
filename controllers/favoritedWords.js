@@ -31,7 +31,7 @@ router.get("/words", async (req, res) => {
     const response = {};
     try {
         const query = { user: req.user._id };
-        const favoritedWords = await favoritedWord.find(query).limit(10);
+        const favoritedWords = await favoritedWord.find(query).limit(5);
         const wordIds = favoritedWords.map(
             (favoritedWord) => favoritedWord["word"]
         );

@@ -31,7 +31,7 @@ router.get("/words", async (req, res) => {
     const response = {};
     try {
         const query = { user: req.user._id };
-        const learnedWords = await learnedWord.find(query).limit(10);
+        const learnedWords = await learnedWord.find(query).limit(5);
         const wordIds = learnedWords.map((learnedWord) => learnedWord["word"]);
         const words = await Word.find({ _id: { $in: wordIds } });
         response["words"] = words;
