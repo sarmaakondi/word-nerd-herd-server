@@ -36,7 +36,10 @@ router.get("/words", async (req, res) => {
             (favoritedWord) => favoritedWord["word"]
         );
         const words = await Word.find({ _id: { $in: wordIds } });
-        response["words"] = words;
+        const updatedWords = words.map((word) => {
+            return { ...word["_doc"], isFavorited: true };
+        });
+        response["words"] = updatedWords;
         response["count"] = response["words"].length;
         res.status(200).json(response);
     } catch (error) {
