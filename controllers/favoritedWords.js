@@ -31,13 +31,27 @@ router.get("/words", async (req, res) => {
     const response = {};
     try {
         const query = { user: req.user._id };
-        const favoritedWords = await favoritedWord.find(query).limit(10);
+        const favoritedWords = await favoritedWord.find(query).limit(5);
         const wordIds = favoritedWords.map(
             (favoritedWord) => favoritedWord["word"]
         );
         const words = await Word.find({ _id: { $in: wordIds } });
-        response["words"] = words;
+        const updatedWords = words.map((word) => {
+            return { ...word["_doc"], isFavorited: true };
+        });
+        response["words"] = updatedWords;
         response["count"] = response["words"].length;
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
+// CHECK FOR FAVORITE WORD
+router.get("/:id", async (req, res) => {
+    try {
+        const query = { user: req.user._id, word: req.params.id };
+        const response = await favoritedWord.find(query);
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);
