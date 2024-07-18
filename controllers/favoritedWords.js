@@ -50,7 +50,8 @@ router.get("/words", async (req, res) => {
 // CHECK FOR FAVORITE WORD
 router.get("/:id", async (req, res) => {
     try {
-        const response = await favoritedWord.find({ word: req.params.id });
+        const query = { user: req.user._id, word: req.params.id };
+        const response = await favoritedWord.find(query);
         res.status(200).json(response);
     } catch (error) {
         res.status(500).json(error.message);

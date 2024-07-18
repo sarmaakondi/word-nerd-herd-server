@@ -45,6 +45,17 @@ router.get("/words", async (req, res) => {
     }
 });
 
+// CHECK FOR LEARNED WORD
+router.get("/:id", async (req, res) => {
+    try {
+        const query = { user: req.user._id, word: req.params.id };
+        const response = await learnedWord.find(query);
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(500).json(error.message);
+    }
+});
+
 // GET ALL LEARNED WORDS COUNT
 router.get("/count", async (req, res) => {
     try {
