@@ -57,7 +57,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // GET ALL LEARNED WORDS COUNT
-router.get("/count", async (req, res) => {
+router.get("/get/count", async (req, res) => {
     try {
         const query = { user: req.user._id };
         const response = await learnedWord.countDocuments(query);
