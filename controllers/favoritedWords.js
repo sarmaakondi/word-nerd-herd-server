@@ -59,7 +59,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //GET ALL FAVORITED WORDS COUNT
-router.get("/count", async (req, res) => {
+router.get("/get/count", async (req, res) => {
     try {
         const query = { user: req.user._id };
         const response = await favoritedWord.countDocuments(query);
